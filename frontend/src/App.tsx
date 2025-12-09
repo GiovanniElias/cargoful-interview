@@ -1,14 +1,14 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import Header from './components/Header'
 import './App.css'
+import CreateAutomationModal from './components/CreateAutomationModal'
+import { useEffect, useState } from 'react';
 
 function App() {
-  const [count, setCount] = useState(0)
-
+  const [modalOpen, setModalOpen] = useState(false);
   return (
     <>
-
+    <Header onOpenModal={() => setModalOpen(true)} />
+    <CreateAutomationModal open={modalOpen} onClose={() => setModalOpen(false)} onSuccess={()=>{}}/>
     </>
   )
 }
