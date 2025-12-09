@@ -62,6 +62,7 @@ pip install -r requirements.txt
 # 2C — Django migration
 if [ -f "manage.py" ]; then
     echo "Running Django migrations..."
+    python manage.py makemigrations || echo "No changes to make migrations"
     python manage.py migrate || echo "No migrations to run"
 else
     echo "⚠️ manage.py not found in backend/"
