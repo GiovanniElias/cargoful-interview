@@ -2,4 +2,4 @@ from django.apps import AppConfig
 
 
 class AutomationsConfig(AppConfig):
-    name = "automations"
+    name = "apps.automations"
