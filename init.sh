@@ -2,87 +2,111 @@
 
 set -e
 
-echo "Starting cargoful interview app..."
+echo "=== Starting fullstack bootstrap ==="
 
-# -----------------------
-# 1. Check prerequisites and install if missing
-# -----------------------
-if ! command -v python3 >/dev/null 2>&1; then
-    echo "Python3 not found. Please install Python3 and re-run the script."
-    exit 1
-fi
-
-if ! command -v pip >/dev/null 2>&1; then
-    echo "pip not found. Please install pip and re-run the script."
-    exit 1
-fi
-
-if ! command -v node >/dev/null 2>&1; then
-    echo "Node.js not found. Installing via nvm..."
-    # Requires nvm installed
-    if command -v nvm >/dev/null 2>&1; then
-        nvm install node
-    else
-        echo "Please install Node.js manually or install nvm first."
+check_cmd() {
+    if ! command -v "$1" >/dev/null 2>&1; then
+        echo "❌ $1 not found. Please install it first."
         exit 1
     fi
-fi
+}
 
-if ! command -v npm >/dev/null 2>&1; then
-    echo "npm not found. Please install npm and re-run the script."
+# -----------------------
+# 1. Check prerequisites
+# -----------------------
+echo "Checking dependencies..."
+
+check_cmd python3
+check_cmd pip
+check_cmd node
+check_cmd npm
+
+# -----------------------
+# 2. Setup BACKEND
+# -----------------------
+echo "=== Backend setup ==="
+
+if [ ! -d "backend" ]; then
+    echo "backend folder not found."
     exit 1
 fi
 
-# -----------------------
-# 2. Setup Python venv
-# -----------------------
-echo "Setting up Python virtual environment..."
-python3 -m venv .venv
-source .venv/bin/activate
+cd backend
 
-# -----------------------
-# 3. Install Python deps from requirements.txt
-# -----------------------
-if [ ! -f "requirements.txt" ]; then
-    echo "requirements.txt not found! Creating default one..."
-    echo "django" > requirements.txt
-    echo "djangorestframework" >> requirements.txt
+# 2A — Virtual environment
+if [ ! -d ".venv" ]; then
+    echo "Creating Python virtual environment..."
+    python3 -m venv .venv
+else
+    echo "Virtual environment already exists."
 fi
 
-echo "Installing Python dependencies..."
+source .venv/bin/activate
+
+# 2B — requirements.txt
+if [ ! -f "requirements.txt" ]; then
+    echo "Creating default requirements.txt..."
+    cat <<EOF > requirements.txt
+django
+djangorestframework
+django-cors-headers
+EOF
+else
+    echo "requirements.txt already exists."
+fi
+
+echo "Installing backend dependencies..."
 pip install --upgrade pip
 pip install -r requirements.txt
 
-# -----------------------
-# 4. Setup frontend (Vite + React + MUI)
-# -----------------------
-if [ ! -d "frontend" ]; then
-    echo "Creating frontend (Vite + React + TS)..."
-    npm create vite@latest frontend -- --template react-ts
+# 2C — Django migration
+if [ -f "manage.py" ]; then
+    echo "Running Django migrations..."
+    python manage.py migrate || echo "No migrations to run"
+else
+    echo "⚠️ manage.py not found in backend/"
 fi
-
-echo "Installing frontend dependencies..."
-cd frontend
-npm install
-
-# Install MUI and date picker dependencies
-npm install @mui/material @mui/icons-material @mui/x-date-pickers dayjs
 
 cd ..
 
 # -----------------------
-# 5. Run Django migrations
+# 3. Setup FRONTEND
 # -----------------------
-echo "Running Django migrations..."
-source .venv/bin/activate
-python manage.py migrate || echo "No migrations to run"
+echo "=== Frontend setup ==="
 
-# -----------------------
-# 6. Start backend and frontend servers
-# -----------------------
-echo "Starting backend server on http://127.0.0.1:8000 ..."
-nohup python manage.py runserver &
+if [ ! -d "frontend" ]; then
+    echo "Creating Vite + React + TS frontend..."
+    nvm use 22
+    npm create vite@latest frontend -- --template react-ts
+else
+    echo "Frontend folder already exists."
+fi
 
-echo "Starting frontend dev server on http://localhost:5173 ..."
 cd frontend
-npm run dev
+
+echo "Installing frontend dependencies..."
+# nvm use 22
+read -p "Press [Enter] to install frontend dependencies..."
+echo "Installing MUI, date pickers, and dayjs..."
+# npm install @mui/material @mui/icons-material @mui/x-date-pickers dayjs
+
+cd ..
+
+# -----------------------
+# 4. Start servers
+# -----------------------
+echo "=== Starting backend and frontend ==="
+
+read -p "Press [Enter] to start the servers..."
+
+echo "Starting Django server at http://127.0.0.1:8000 ..."
+cd backend
+source .venv/bin/activate
+nohup python manage.py runserver > ../backend.log 2>&1 &
+cd ..
+
+read -p
+
+echo "Starting Vite dev server at http://localhost:5173 ..."
+cd frontend
+# npm run dev
