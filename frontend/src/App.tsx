@@ -15,14 +15,16 @@ function App() {
   const [error, setError] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
 
+
+
   // Fetch data from backend on component mount
   useEffect(() => {
-    loadAutomations(setLoading, setError, setAllAutomations, setKpi, setScheduledRuns);
+    loadAutomations({setLoading, setError, setAllAutomations, setKpi, setScheduledRuns});
   }, []);
 
   // When successfully created a new automation, refresh the data
   const handleModalSuccess = () => {
-    loadAutomations(setLoading, setError, setAllAutomations, setKpi, setScheduledRuns);
+    loadAutomations({setLoading, setError, setAllAutomations, setKpi, setScheduledRuns});
   };
   return (
     <>
