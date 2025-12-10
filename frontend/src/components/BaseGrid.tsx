@@ -1,9 +1,5 @@
-import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
-// import Grid from '@mui/material/Grid';
 import Header from './Header';
-import { useState } from 'react';
 // import CreateAutomationModal from './CreateAutomationModal';
 // import RunsKPIsInfo from './RunsKPIsInfo';
 // import ScheduledRunsInfo from './ScheduledRunsInfo';
@@ -18,6 +14,9 @@ interface BaseGridProps {
     kpi: KPIData | null;
     scheduledRuns: ScheduledRuns | null;
     onOpenCreateModal: () => void;
+    onOpenConfirmChangesModal: () => void;
+    setApplyChangesFunction: (func: ((obj: AutomationGridItem) => void) | null) => void;
+    setAutomationToChange: (automation: AutomationGridItem) => void;
 }
 
 export default function BaseGrid({
@@ -25,6 +24,9 @@ export default function BaseGrid({
     kpi,
     scheduledRuns,
     onOpenCreateModal,
+    onOpenConfirmChangesModal,
+    setApplyChangesFunction,
+    setAutomationToChange
 }: BaseGridProps) {
 
     return (
@@ -35,7 +37,7 @@ export default function BaseGrid({
                 active_schedules={kpi?.active_schedules}
                 success_rate={kpi?.success_rate} />
             <ScheduledRunsInfo scheduled_today={scheduledRuns?.today} run_yesterday={scheduledRuns?.yesterday} />
-            <AutomationsTable automations={allAutomations} />
+            <AutomationsTable automations={allAutomations} setApplyChangesFunction={setApplyChangesFunction} setAutomationToChange={setAutomationToChange} onOpenConfirmChangesModal={onOpenConfirmChangesModal} />
         </Box>
     );
 }

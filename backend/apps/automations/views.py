@@ -56,6 +56,7 @@ class AutomationReadAPIView(APIView):
                 next_run = a.schedule.start_date 
 
             all_autos.append({
+                "id": a.id,
                 "name": a.name,
                 "status": a.status,
                 "schedule": {"frequency": a.schedule.frequency, "start_date": a.schedule.start_date},
@@ -74,3 +75,11 @@ class AutomationReadAPIView(APIView):
             },
             "all_automations": all_autos
         })
+
+class AutomationUpdateAPIView(generics.UpdateAPIView):
+    queryset = Automation.objects.all()
+    serializer_class = AutomationSerializer
+
+class AutomationDeleteAPIView(generics.DestroyAPIView):
+    queryset = Automation.objects.all()
+    serializer_class = AutomationSerializer

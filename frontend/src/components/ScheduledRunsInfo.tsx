@@ -34,7 +34,7 @@ export default function ScheduledRunsInfo({ scheduled_today, run_yesterday }: { 
         <Grid container spacing={2} sx={{ margin: '2rem 0' }}>
             <Grid size={6}>
                 {scheduled_today?.map((run) => (
-                    <Item sx={{ height: '3rem' }}>{run.name} - {run.time}</Item>
+                    <Item sx={{ height: '3rem' }} key={run.name}>{run.name} - {run.time}</Item>
                 ))}
             </Grid>
             <Grid size={6}>

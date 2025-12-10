@@ -30,6 +30,7 @@ export interface LastRun {
 }
 
 export interface AutomationGridItem {
+  id: string;
   name: string;
   status: boolean;
   schedule: Schedule;

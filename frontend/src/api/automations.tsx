@@ -1,4 +1,3 @@
-// src/api/automations.ts
 import { apiClient } from './client';
 
 import type {
@@ -54,6 +53,21 @@ export const postAutomation = async (payload: CreateAutomationPayload) => {
     const response = await apiClient.post<AutomationGridItem>(
         'automations/create/',
         payload
+    );
+    return response.data;
+};
+
+export const deleteAutomation = async (automation: Partial<AutomationGridItem>) => {
+    console.log('Delete automation called', automation);
+    const response = await apiClient.delete(`automations/${automation.id}/delete/`);
+    return response.data;
+};
+
+export const updateAutomation = async (automation: Partial<AutomationGridItem>) => {
+    console.log('Update automation called', automation);
+    const response = await apiClient.put<AutomationGridItem>(
+        `automations/${automation.id}/update/`,
+        automation
     );
     return response.data;
 };

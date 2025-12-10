@@ -1,4 +1,3 @@
-import Header from './components/Header'
 import './App.css'
 import CreateAutomationModal from './components/CreateAutomationModal'
 import { useEffect, useState } from 'react';
@@ -6,7 +5,7 @@ import { loadAutomations } from './api/automations';
 import type { AutomationGridItem, KPIData, ScheduledRuns } from './models/automations';
 import { Snackbar, Alert } from '@mui/material';
 import BaseGrid from './components/BaseGrid';
-
+import ConfirmChangesModal from './components/ConfirmChangesModal';
 
 
 function App() {
@@ -15,7 +14,10 @@ function App() {
   const [scheduledRuns, setScheduledRuns] = useState<ScheduledRuns | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [modalOpen, setModalOpen] = useState(false);
+  const [creationModalOpen, setCreationModalOpen] = useState(false);
+  const [confirmChangesModalOpen, setConfirmChangesModalOpen] = useState(false);
+  const [applyChangesFunction, setApplyChangesFunction] = useState<((obj: AutomationGridItem) => void) | null>(null);
+  const [automationToChange, setAutomationToChange] = useState<AutomationGridItem>();
 
 
 
@@ -35,9 +37,13 @@ function App() {
         allAutomations={allAutomations}
         kpi={kpi}
         scheduledRuns={scheduledRuns}
-        onOpenCreateModal={() => setModalOpen(true)}
+        onOpenCreateModal={() => setCreationModalOpen(true)}
+        setApplyChangesFunction={setApplyChangesFunction}
+        setAutomationToChange={setAutomationToChange}
+        onOpenConfirmChangesModal={() => setConfirmChangesModalOpen(true)}
       />
-      <CreateAutomationModal open={modalOpen} onClose={() => setModalOpen(false)} onSuccess={handleModalSuccess} />
+      <CreateAutomationModal open={creationModalOpen} onClose={() => setCreationModalOpen(false)} onSuccess={handleModalSuccess} />
+      <ConfirmChangesModal open={confirmChangesModalOpen} onClose={() => setConfirmChangesModalOpen(false)} onSuccess={handleModalSuccess} applyChangesFunction={applyChangesFunction!}  automationToChange={automationToChange!}/>
       <Snackbar
         open={!!error}
         autoHideDuration={5000}

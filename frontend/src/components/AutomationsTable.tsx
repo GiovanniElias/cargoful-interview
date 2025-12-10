@@ -14,12 +14,21 @@ import {
     Typography,
 } from '@mui/material';
 import type { AutomationGridItem } from '../models/automations';
+import UpdateAndDeleteButtonGroup from './UpdateAndDeleteButtonGroup';
 
 interface Props {
     automations: AutomationGridItem[];
+    onOpenConfirmChangesModal: () => void;
+    setApplyChangesFunction: (func: ((obj: AutomationGridItem) => void) | null) => void;
+    setAutomationToChange: (automation: AutomationGridItem) => void;
 }
 
-export default function AutomationTable({ automations }: Props) {
+export default function AutomationTable({ 
+    automations, 
+    onOpenConfirmChangesModal,
+    setApplyChangesFunction, 
+    setAutomationToChange 
+}: Props) {
     const [search, setSearch] = useState('');
 
     const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -31,7 +40,7 @@ export default function AutomationTable({ automations }: Props) {
         const searchTerm = search.toLowerCase();
 
         const name = automation.name.toLowerCase();
-        const status = automation.status ? 'active' : 'inactive'; // convert boolean to string
+        const status = automation.status ? 'active' : 'inactive';
         const frequency = automation.schedule.frequency.toLowerCase();
         const startDate = new Date(automation.schedule.start_date)
             .toLocaleString()
@@ -39,9 +48,7 @@ export default function AutomationTable({ automations }: Props) {
         const lastRunTimestamp = automation.last_run.timestamp
             ? new Date(automation.last_run.timestamp).toLocaleString().toLowerCase()
             : '';
-        const lastRunStatus = automation.last_run.status
-            ? 'Active'
-            : 'Inactive';
+        const lastRunStatus = automation.last_run.status ? 'Active' : 'Inactive';
         const nextRun = new Date(automation.next_run)
             .toLocaleString()
             .toLowerCase();
@@ -57,12 +64,18 @@ export default function AutomationTable({ automations }: Props) {
         );
     });
 
-
     return (
         <Box>
             {/* Header: Title + Search */}
-            <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-                <Typography variant="h6">All Automations</Typography>
+            <Box 
+                display="flex" 
+                justifyContent="space-between" 
+                alignItems="center" 
+                mb={2}
+            >
+                <Typography variant="h6">
+                    All Automations
+                </Typography>
                 <TextField
                     label="Search"
                     variant="outlined"
@@ -83,24 +96,40 @@ export default function AutomationTable({ automations }: Props) {
                             <TableCell>Start Date</TableCell>
                             <TableCell>Last Run</TableCell>
                             <TableCell>Next Run</TableCell>
+                            <TableCell>Action</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {filteredAutomations.map((automation, index) => (
                             <TableRow key={index}>
-                                <TableCell><b>{automation.name}</b></TableCell>
-                                <TableCell>{automation.status ? 'Active' : 'Inactive'}</TableCell>
-                                <TableCell>{automation.schedule.frequency}</TableCell>
+                                <TableCell>
+                                    <b>{automation.name}</b>
+                                </TableCell>
+                                <TableCell>
+                                    {automation.status ? 'Active' : 'Inactive'}
+                                </TableCell>
+                                <TableCell>
+                                    {automation.schedule.frequency}
+                                </TableCell>
                                 <TableCell>
                                     {new Date(automation.schedule.start_date).toLocaleString()}
                                 </TableCell>
                                 <TableCell>
                                     {automation.last_run.timestamp
                                         ? `${new Date(automation.last_run.timestamp).toLocaleString()} (${automation.last_run.status})`
-                                        : 'Never'}
+                                        : 'Never'
+                                    }
                                 </TableCell>
                                 <TableCell>
                                     {new Date(automation.next_run).toLocaleString()}
+                                </TableCell>
+                                <TableCell>
+                                    <UpdateAndDeleteButtonGroup 
+                                        automationObject={automation} 
+                                        setApplyChangesFunction={setApplyChangesFunction} 
+                                        setAutomationToChange={setAutomationToChange}
+                                        onOpenConfirmChangesModal={onOpenConfirmChangesModal}
+                                    />
                                 </TableCell>
                             </TableRow>
                         ))}
