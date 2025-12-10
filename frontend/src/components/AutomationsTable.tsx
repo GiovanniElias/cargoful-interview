@@ -14,7 +14,7 @@ import {
     Typography,
 } from '@mui/material';
 import type { AutomationGridItem } from '../models/automations';
-import UpdateAndDeleteButtonGroup from './UpdateAndDeleteButtonGroup';
+import AutomationTableRow from './AutomationTableRow';
 
 interface Props {
     automations: AutomationGridItem[];
@@ -23,11 +23,11 @@ interface Props {
     setAutomationToChange: (automation: AutomationGridItem) => void;
 }
 
-export default function AutomationTable({ 
-    automations, 
+export default function AutomationTable({
+    automations,
     onOpenConfirmChangesModal,
-    setApplyChangesFunction, 
-    setAutomationToChange 
+    setApplyChangesFunction,
+    setAutomationToChange
 }: Props) {
     const [search, setSearch] = useState('');
 
@@ -67,10 +67,10 @@ export default function AutomationTable({
     return (
         <Box>
             {/* Header: Title + Search */}
-            <Box 
-                display="flex" 
-                justifyContent="space-between" 
-                alignItems="center" 
+            <Box
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
                 mb={2}
             >
                 <Typography variant="h6">
@@ -101,37 +101,13 @@ export default function AutomationTable({
                     </TableHead>
                     <TableBody>
                         {filteredAutomations.map((automation, index) => (
-                            <TableRow key={index}>
-                                <TableCell>
-                                    <b>{automation.name}</b>
-                                </TableCell>
-                                <TableCell>
-                                    {automation.status ? 'Active' : 'Inactive'}
-                                </TableCell>
-                                <TableCell>
-                                    {automation.schedule.frequency}
-                                </TableCell>
-                                <TableCell>
-                                    {new Date(automation.schedule.start_date).toLocaleString()}
-                                </TableCell>
-                                <TableCell>
-                                    {automation.last_run.timestamp
-                                        ? `${new Date(automation.last_run.timestamp).toLocaleString()} (${automation.last_run.status})`
-                                        : 'Never'
-                                    }
-                                </TableCell>
-                                <TableCell>
-                                    {new Date(automation.next_run).toLocaleString()}
-                                </TableCell>
-                                <TableCell>
-                                    <UpdateAndDeleteButtonGroup 
-                                        automationObject={automation} 
-                                        setApplyChangesFunction={setApplyChangesFunction} 
-                                        setAutomationToChange={setAutomationToChange}
-                                        onOpenConfirmChangesModal={onOpenConfirmChangesModal}
-                                    />
-                                </TableCell>
-                            </TableRow>
+                            <AutomationTableRow
+                                key={index}
+                                automation={automation}
+                                setApplyChangesFunction={setApplyChangesFunction}
+                                setAutomationToChange={setAutomationToChange}
+                                onOpenConfirmChangesModal={onOpenConfirmChangesModal}
+                            />
                         ))}
                         {filteredAutomations.length === 0 && (
                             <TableRow>
