@@ -27,6 +27,7 @@ function App() {
   const handleModalSuccess = () => {
     loadAutomations({ setLoading, setError, setAllAutomations, setKpi, setScheduledRuns });
   };
+  
   return (
     <>
       <Header onOpenModal={() => setModalOpen(true)} />
