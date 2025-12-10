@@ -12,11 +12,9 @@ class ScheduleSerializer(serializers.ModelSerializer):
 class AutomationSerializer(serializers.ModelSerializer):
     id = serializers.CharField(read_only=True)
     schedule = ScheduleSerializer()
-    last_run = serializers.PrimaryKeyRelatedField(read_only=True)
-
     class Meta:
         model = Automation
-        fields = ['id', 'name', 'status', 'schedule', 'last_run']
+        fields = ['id', 'name', 'status', 'schedule']
 
     def get_last_run(self, obj):
         if obj.last_run:

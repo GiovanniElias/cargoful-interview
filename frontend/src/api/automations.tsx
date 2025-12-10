@@ -44,6 +44,11 @@ interface FormHandlers {
     onClose: () => void;
 }
 
+interface CreateAutomationParams {
+    setError: (error: string | null) => void;
+    onFormReset?: () => void;
+}
+
 export const fetchAutomations = async () => {
     const response = await apiClient.get<AutomationReadResponse>('automations/');
     return response.data;
@@ -88,51 +93,55 @@ export const loadAutomations = async ({ setLoading, setError, setAllAutomations,
     }
 };
 
-
-
-export const createAutomation = async (
-    {setErrors, setLoading, onSuccess, onClose}: FormHandlers, 
-    {setName, setStatus, setFrequency, setStartDate}: FormSetters,
-    {name, status, frequency, startDate}: FormState
+export const createAutomationWithErrorHandling = async (
+    automation: Partial<AutomationGridItem>,
+    { setError, onFormReset }: CreateAutomationParams
 ) => {
-        if (!name || !startDate) {
-            setErrors('Name and start date are required');
+    try {
+        setError(null);
+        
+        if (!automation.name || !automation.schedule?.start_date) {
+            setError('Name and start date are required.');
             return;
         }
 
-        setLoading(true);
-        setErrors(null);
-
-        try {
-            await postAutomation({
-                name,
-                status: status,
-                schedule: {
-                    frequency,
-                    start_date: startDate.toISOString()
-                }
-            });
-
-            if (onSuccess) onSuccess();
-            onClose();
-
-            // reset form
-            setName('');
-            setStatus(true);
-            setFrequency('Daily');
-            setStartDate(dayjs());
-        } catch (err: any) {
-            if (err.response) {
-                // server returned an error
-                if (err.response.data) {
-                    setErrors(JSON.stringify(err.response.data));
-                } else {
-                    setErrors(`Unexpected error: ${err.response.status}`);
-                }
-            } else {
-                setErrors('Network error');
+        const response = await postAutomation({
+            name: automation.name,
+            status: automation.status ?? true,
+            schedule: {
+                frequency: automation.schedule.frequency,
+                start_date: automation.schedule.start_date
             }
-        } finally {
-            setLoading(false);
+        });
+
+        if (onFormReset) onFormReset();
+        return response;
+    } catch (err: any) {
+        console.error(err);
+        if (err.response?.data) {
+            setError(JSON.stringify(err.response.data));
+        } else if (err.message) {
+            setError(err.message);
+        } else {
+            setError('Failed to create automation');
         }
-    };
+        throw err;
+    }
+};
+
+export const createAutomation = async (automation: Partial<AutomationGridItem>) => {
+    if (!automation.name || !automation.schedule?.start_date) {
+        throw new Error('Name and start date are required.');
+    }
+
+    const response = await postAutomation({
+        name: automation.name,
+        status: automation.status ?? true,
+        schedule: {
+            frequency: automation.schedule.frequency,
+            start_date: automation.schedule.start_date
+        }
+    });
+
+    return response;
+};

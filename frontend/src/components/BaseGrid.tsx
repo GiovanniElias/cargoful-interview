@@ -14,6 +14,7 @@ interface BaseGridProps {
     kpi: KPIData | null;
     scheduledRuns: ScheduledRuns | null;
     onOpenCreateModal: () => void;
+    onOpenEditModal: (automation: AutomationGridItem) => void;
     onOpenConfirmChangesModal: () => void;
     setApplyChangesFunction: (func: ((obj: AutomationGridItem) => void) | null) => void;
     setAutomationToChange: (automation: AutomationGridItem) => void;
@@ -24,6 +25,7 @@ export default function BaseGrid({
     kpi,
     scheduledRuns,
     onOpenCreateModal,
+    onOpenEditModal,
     onOpenConfirmChangesModal,
     setApplyChangesFunction,
     setAutomationToChange
@@ -37,7 +39,7 @@ export default function BaseGrid({
                 active_schedules={kpi?.active_schedules}
                 success_rate={kpi?.success_rate} />
             <ScheduledRunsInfo scheduled_today={scheduledRuns?.today} run_yesterday={scheduledRuns?.yesterday} />
-            <AutomationsTable automations={allAutomations} setApplyChangesFunction={setApplyChangesFunction} setAutomationToChange={setAutomationToChange} onOpenConfirmChangesModal={onOpenConfirmChangesModal} />
+            <AutomationsTable automations={allAutomations} setApplyChangesFunction={setApplyChangesFunction} setAutomationToChange={setAutomationToChange} onOpenConfirmChangesModal={onOpenConfirmChangesModal} onOpenEditModal={onOpenEditModal} />
         </Box>
     );
 }

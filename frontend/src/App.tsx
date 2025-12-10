@@ -7,7 +7,6 @@ import { Snackbar, Alert } from '@mui/material';
 import BaseGrid from './components/BaseGrid';
 import ConfirmChangesModal from './components/ConfirmChangesModal';
 
-
 function App() {
   const [allAutomations, setAllAutomations] = useState<AutomationGridItem[]>([]);
   const [kpi, setKpi] = useState<KPIData | null>(null);
@@ -18,17 +17,21 @@ function App() {
   const [confirmChangesModalOpen, setConfirmChangesModalOpen] = useState(false);
   const [applyChangesFunction, setApplyChangesFunction] = useState<((obj: AutomationGridItem) => void) | null>(null);
   const [automationToChange, setAutomationToChange] = useState<AutomationGridItem>();
-
-
+  const [editingAutomation, setEditingAutomation] = useState<AutomationGridItem | null>(null);
 
   // Fetch data from backend on component mount
   useEffect(() => {
     loadAutomations({ setLoading, setError, setAllAutomations, setKpi, setScheduledRuns });
   }, []);
 
-  // When successfully created a new automation, refresh the data
+  // When successfully created/updated an automation, refresh the data and close modals
   const handleModalSuccess = () => {
     loadAutomations({ setLoading, setError, setAllAutomations, setKpi, setScheduledRuns });
+    // Close the CreateAutomationModal if it's open (happens after successful updates)
+    if (creationModalOpen) {
+      setCreationModalOpen(false);
+      setEditingAutomation(null);
+    }
   };
 
   return (
@@ -37,13 +40,38 @@ function App() {
         allAutomations={allAutomations}
         kpi={kpi}
         scheduledRuns={scheduledRuns}
-        onOpenCreateModal={() => setCreationModalOpen(true)}
+        onOpenCreateModal={() => {
+          setEditingAutomation(null);
+          setCreationModalOpen(true);
+        }}
+        onOpenEditModal={(automation) => {
+          setEditingAutomation(automation);
+          setCreationModalOpen(true);
+        }}
         setApplyChangesFunction={setApplyChangesFunction}
         setAutomationToChange={setAutomationToChange}
         onOpenConfirmChangesModal={() => setConfirmChangesModalOpen(true)}
       />
-      <CreateAutomationModal open={creationModalOpen} onClose={() => setCreationModalOpen(false)} onSuccess={handleModalSuccess} />
-      <ConfirmChangesModal open={confirmChangesModalOpen} onClose={() => setConfirmChangesModalOpen(false)} onSuccess={handleModalSuccess} applyChangesFunction={applyChangesFunction!}  automationToChange={automationToChange!}/>
+      <CreateAutomationModal
+        open={creationModalOpen}
+        onClose={() => {
+          setCreationModalOpen(false);
+          setEditingAutomation(null);
+        }}
+        onError={setError}
+        setApplyChangesFunction={setApplyChangesFunction}
+        setAutomationToChange={setAutomationToChange}
+        onOpenConfirmChangesModal={() => setConfirmChangesModalOpen(true)}
+        editingAutomation={editingAutomation}
+      />
+      <ConfirmChangesModal
+        open={confirmChangesModalOpen}
+        onClose={() => setConfirmChangesModalOpen(false)}
+        onSuccess={handleModalSuccess}
+        onError={setError}
+        applyChangesFunction={applyChangesFunction!}
+        automationToChange={automationToChange!}
+      />
       <Snackbar
         open={!!error}
         autoHideDuration={5000}

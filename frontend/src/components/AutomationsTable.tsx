@@ -19,6 +19,7 @@ import AutomationTableRow from './AutomationTableRow';
 interface Props {
     automations: AutomationGridItem[];
     onOpenConfirmChangesModal: () => void;
+    onOpenEditModal: (automation: AutomationGridItem) => void;
     setApplyChangesFunction: (func: ((obj: AutomationGridItem) => void) | null) => void;
     setAutomationToChange: (automation: AutomationGridItem) => void;
 }
@@ -26,6 +27,7 @@ interface Props {
 export default function AutomationTable({
     automations,
     onOpenConfirmChangesModal,
+    onOpenEditModal,
     setApplyChangesFunction,
     setAutomationToChange
 }: Props) {
@@ -107,6 +109,7 @@ export default function AutomationTable({
                                 setApplyChangesFunction={setApplyChangesFunction}
                                 setAutomationToChange={setAutomationToChange}
                                 onOpenConfirmChangesModal={onOpenConfirmChangesModal}
+                                onOpenEditModal={onOpenEditModal}
                             />
                         ))}
                         {filteredAutomations.length === 0 && (

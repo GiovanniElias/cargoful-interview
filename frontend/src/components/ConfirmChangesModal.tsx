@@ -12,18 +12,23 @@ interface Props {
   open: boolean;
   onClose: () => void;
   onSuccess: () => void;
+  onError?: (error: string) => void;
   applyChangesFunction: (obj: AutomationGridItem) => void;
   automationToChange: AutomationGridItem;
 }
 
-export default function ConfirmChangesModal({ open, onClose, onSuccess, applyChangesFunction, automationToChange }: Props) {
+export default function ConfirmChangesModal({ open, onClose, onSuccess, onError, applyChangesFunction, automationToChange }: Props) {
   const handleConfirm = async () => {
     try {
       await applyChangesFunction(automationToChange);
       onSuccess();
       onClose();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error applying changes:', error);
+      if (onError) {
+        const errorMessage = error?.message || 'An error occurred while applying changes';
+        onError(errorMessage);
+      }
     }
   };
   

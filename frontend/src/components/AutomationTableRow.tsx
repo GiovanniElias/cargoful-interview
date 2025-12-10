@@ -5,6 +5,7 @@ import type { AutomationGridItem } from '../models/automations';
 interface AutomationTableRowProps {
     automation: AutomationGridItem;
     onOpenConfirmChangesModal: () => void;
+    onOpenEditModal: (automation: AutomationGridItem) => void;
     setApplyChangesFunction: (func: ((obj: AutomationGridItem) => void) | null) => void;
     setAutomationToChange: (automation: AutomationGridItem) => void;
 }
@@ -13,7 +14,8 @@ const AutomationTableRow = ({
     automation,
     setApplyChangesFunction,
     setAutomationToChange,
-    onOpenConfirmChangesModal
+    onOpenConfirmChangesModal,
+    onOpenEditModal
 }: AutomationTableRowProps) => {
     return (
         <TableRow hover>
@@ -44,6 +46,7 @@ const AutomationTableRow = ({
                     setApplyChangesFunction={setApplyChangesFunction} 
                     setAutomationToChange={setAutomationToChange}
                     onOpenConfirmChangesModal={onOpenConfirmChangesModal}
+                    onOpenEditModal={onOpenEditModal}
                 />
             </TableCell>
         </TableRow>
