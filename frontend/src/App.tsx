@@ -35,7 +35,6 @@ function App() {
         allAutomations={allAutomations}
         kpi={kpi}
         scheduledRuns={scheduledRuns}
-        loading={loading}
         onOpenCreateModal={() => setModalOpen(true)}
       />
       <CreateAutomationModal open={modalOpen} onClose={() => setModalOpen(false)} onSuccess={handleModalSuccess} />

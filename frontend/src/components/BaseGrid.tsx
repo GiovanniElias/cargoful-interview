@@ -17,7 +17,6 @@ interface BaseGridProps {
     allAutomations: AutomationGridItem[];
     kpi: KPIData | null;
     scheduledRuns: ScheduledRuns | null;
-    loading: boolean;
     onOpenCreateModal: () => void;
 }
 
@@ -25,10 +24,8 @@ export default function BaseGrid({
     allAutomations,
     kpi,
     scheduledRuns,
-    loading,
     onOpenCreateModal,
 }: BaseGridProps) {
-    const [openModal, setOpenModal] = useState(false);
 
     return (
         <Box className="base-grid" sx={{ flexGrow: 1 }}>
