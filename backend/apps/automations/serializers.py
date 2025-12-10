@@ -12,7 +12,7 @@ class ScheduleSerializer(serializers.ModelSerializer):
 class AutomationSerializer(serializers.ModelSerializer):
     id = serializers.CharField(read_only=True)
     schedule = ScheduleSerializer()
-    last_run = serializers.SerializerMethodField()
+    last_run = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = Automation
@@ -31,3 +31,18 @@ class AutomationSerializer(serializers.ModelSerializer):
         schedule, _ = Schedule.objects.get_or_create(**schedule_data)
         automation = Automation.objects.create(schedule=schedule, **validated_data)
         return automation
+    
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get('name', instance.name)
+        instance.status = validated_data.get('status', instance.status)
+
+        schedule_data = validated_data.get('schedule')
+        
+        if schedule_data:
+            schedule = instance.schedule
+            schedule.frequency = schedule_data.get('frequency', schedule.frequency)
+            schedule.start_date = schedule_data.get('start_date', schedule.start_date)
+            schedule.save()
+
+        instance.save()
+        return instance
