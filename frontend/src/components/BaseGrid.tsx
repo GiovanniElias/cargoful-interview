@@ -9,6 +9,7 @@ import { useState } from 'react';
 // import ScheduledRunsInfo from './ScheduledRunsInfo';
 import type { AutomationGridItem, KPIData, ScheduledRuns } from '../models/automations';
 import RunsKPIsInfo from './RunsKPIsInfo';
+import ScheduledRunsInfo from './ScheduledRunsInfo';
 // import AutomationsTable from './AutomationsTable';
 
 interface BaseGridProps {
@@ -35,8 +36,8 @@ export default function BaseGrid({
                 total_automations={kpi?.total_number_of_automations}
                 active_schedules={kpi?.active_schedules}
                 success_rate={kpi?.success_rate} />
-            {/* <ScheduledRunsInfo scheduled_today={scheduledRuns?.today} run_yesterday={scheduledRuns?.yesterday} />
-            <AutomationsTable automations={allAutomations} />
+            <ScheduledRunsInfo scheduled_today={scheduledRuns?.today} run_yesterday={scheduledRuns?.yesterday} />
+            {/*<AutomationsTable automations={allAutomations} />
             <CreateAutomationModal
                 open={openModal}
                 onClose={() => setOpenModal(false)}
