@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { loadAutomations } from './api/automations';
 import type { AutomationGridItem, KPIData, ScheduledRuns } from './models/automations';
 import { Snackbar, Alert } from '@mui/material';
+import BaseGrid from './components/BaseGrid';
 
 
 
@@ -27,10 +28,16 @@ function App() {
   const handleModalSuccess = () => {
     loadAutomations({ setLoading, setError, setAllAutomations, setKpi, setScheduledRuns });
   };
-  
+
   return (
     <>
-      <Header onOpenModal={() => setModalOpen(true)} />
+      <BaseGrid
+        allAutomations={allAutomations}
+        kpi={kpi}
+        scheduledRuns={scheduledRuns}
+        loading={loading}
+        onOpenCreateModal={() => setModalOpen(true)}
+      />
       <CreateAutomationModal open={modalOpen} onClose={() => setModalOpen(false)} onSuccess={handleModalSuccess} />
       <Snackbar
         open={!!error}
