@@ -4,6 +4,7 @@ import CreateAutomationModal from './components/CreateAutomationModal'
 import { useEffect, useState } from 'react';
 import { loadAutomations } from './api/automations';
 import type { AutomationGridItem, KPIData, ScheduledRuns } from './models/automations';
+import { Snackbar, Alert } from '@mui/material';
 
 
 
@@ -19,17 +20,25 @@ function App() {
 
   // Fetch data from backend on component mount
   useEffect(() => {
-    loadAutomations({setLoading, setError, setAllAutomations, setKpi, setScheduledRuns});
+    loadAutomations({ setLoading, setError, setAllAutomations, setKpi, setScheduledRuns });
   }, []);
 
   // When successfully created a new automation, refresh the data
   const handleModalSuccess = () => {
-    loadAutomations({setLoading, setError, setAllAutomations, setKpi, setScheduledRuns});
+    loadAutomations({ setLoading, setError, setAllAutomations, setKpi, setScheduledRuns });
   };
   return (
     <>
       <Header onOpenModal={() => setModalOpen(true)} />
       <CreateAutomationModal open={modalOpen} onClose={() => setModalOpen(false)} onSuccess={handleModalSuccess} />
+      <Snackbar
+        open={!!error}
+        autoHideDuration={5000}
+        onClose={() => setError(null)}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert severity="error">{error}</Alert>
+      </Snackbar>
     </>
   )
 }
