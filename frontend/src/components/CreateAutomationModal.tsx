@@ -15,10 +15,11 @@ import {
   Select,
   InputLabel,
   FormControl,
-  Typography
+  Typography,
 } from '@mui/material';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import dayjs, { Dayjs } from 'dayjs';
+import { createAutomation } from '../api/automations';
 
 interface Props {
   open: boolean;
@@ -31,12 +32,14 @@ export default function CreateAutomationModal({ open, onClose, onSuccess }: Prop
   const [status, setStatus] = useState(true);
   const [frequency, setFrequency] = useState('Daily');
   const [startDate, setStartDate] = useState<Dayjs | null>(dayjs());
+  const [errors, setErrors] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
       <DialogTitle>Create New Automation</DialogTitle>
       <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
-
+            {errors && <Typography color="error">{errors}</Typography>}
         <TextField
           label="Name"
           value={name}
@@ -72,7 +75,11 @@ export default function CreateAutomationModal({ open, onClose, onSuccess }: Prop
 
       <DialogActions>
         <Button onClick={onClose}>Cancel</Button>
-        <Button variant="contained" onClick={() => {}} disabled={false}>
+        <Button variant="contained" onClick={() => createAutomation(
+          {setErrors, setLoading, onSuccess, onClose}, 
+          {setName, setStatus, setFrequency, setStartDate},
+          {name, status, frequency, startDate}
+        )} disabled={loading}>
           {'Create'}
         </Button>
       </DialogActions>
