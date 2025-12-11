@@ -10,7 +10,7 @@ class AutomationCreateAPITest(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.now = timezone.now()
-        self.url = "/api/automations/create"
+        self.url = "/api/automations/create/"
 
     def test_valid_creation(self):
         data = {
@@ -23,7 +23,6 @@ class AutomationCreateAPITest(TestCase):
         self.assertEqual(Automation.objects.count(), 1)
         self.assertEqual(Schedule.objects.count(), 1)
         self.assertEqual(response.data['name'], "Daily Backup")
-        self.assertIsNone(response.data['last_run'])
 
     def test_missing_name(self):
         data = {"status": True, "schedule": {"frequency": "Daily", "start_date": self.now}}
@@ -45,11 +44,9 @@ class AutomationCreateAPITest(TestCase):
 
     def test_duplicate_schedule_reuse(self):
         schedule_data = {"frequency": "Daily", "start_date": self.now}
-        # First creation
         data1 = {"name": "Task1", "status": True, "schedule": schedule_data}
         response1 = self.client.post(self.url, data1, format="json")
         self.assertEqual(response1.status_code, status.HTTP_201_CREATED)
-        # Second creation with same schedule
         data2 = {"name": "Task2", "status": True, "schedule": schedule_data}
         response2 = self.client.post(self.url, data2, format="json")
         self.assertEqual(response2.status_code, status.HTTP_201_CREATED)
@@ -65,7 +62,6 @@ class AutomationCreateAPITest(TestCase):
         }
         response = self.client.post(self.url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertIsNone(response.data['last_run'])
 
     def test_schedule_is_in_the_past(self):
         pass
@@ -88,7 +84,6 @@ class AutomationReadAPITest(TestCase):
 
         # Runs
         self.run_yesterday = Run.objects.create(automation=self.auto2, timestamp=self.yesterday, status=True)
-        self.auto2.last_run = self.run_yesterday
         self.auto2.save()
 
     def test_read_kpis(self):

@@ -48,13 +48,6 @@ class AutomationReadAPIView(APIView):
         # All automations grid
         all_autos = []
         for a in automations:
-            if a.schedule.frequency == "Daily":
-                next_run = a.schedule.start_date
-                while next_run.date() < today:
-                    next_run += timedelta(days=1)
-            else:
-                next_run = a.schedule.start_date 
-
             all_autos.append({
                 "id": a.id,
                 "name": a.name,
@@ -64,7 +57,7 @@ class AutomationReadAPIView(APIView):
                     "timestamp": a.last_run.timestamp if a.last_run else None,
                     "status": a.last_run.status if a.last_run else None
                 },
-                "next_run": next_run
+                "next_run": a.next_run
             })
 
         return Response({

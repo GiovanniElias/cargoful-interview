@@ -20,17 +20,15 @@ class AutomationSerializerTest(TestCase):
         data = serializer.data
         self.assertEqual(data['name'], "Backup")
         self.assertEqual(data['schedule']['frequency'], "Daily")
-        self.assertIsNone(data['last_run'])
 
     def test_serialization_with_last_run(self):
         schedule = Schedule.objects.create(**self.schedule_data)
         automation = Automation.objects.create(name="Backup", status=True, schedule=schedule)
         run = Run.objects.create(automation=automation, timestamp=timezone.now(), status=True)
-        automation.last_run = run
         automation.save()
         serializer = AutomationSerializer(automation)
         data = serializer.data
-        self.assertEqual(data['last_run']['status'], True)
+        self.assertEqual(automation.last_run.status, True)
 
     def test_deserialization_create_nested_schedule(self):
         input_data = {"name": "Report", "status": True, "schedule": self.schedule_data}

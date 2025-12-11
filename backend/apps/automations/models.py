@@ -1,5 +1,5 @@
-from datetime import timedelta, timezone
-from time import timezone
+from datetime import timedelta, datetime
+from django.utils import timezone
 import uuid
 from django.db import models
 
@@ -38,7 +38,7 @@ class Automation(models.Model):
         next_run = self.schedule.start_date
         now = timezone.now()
 
-        while next_run <= now:
+        while next_run < now:
             next_run += delta
 
         return next_run
