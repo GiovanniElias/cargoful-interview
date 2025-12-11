@@ -1,33 +1,41 @@
 import Grid from '@mui/material/Grid';
-import { styled } from '@mui/material/styles';
-import Paper from '@mui/material/Paper';
+import { KPICard } from './KPICard';
+import GridViewIcon from '@mui/icons-material/GridView';
+import ElectricBoltIcon from '@mui/icons-material/ElectricBolt';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
-
-const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: '#fff',
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    color: (theme.vars ?? theme).palette.text.secondary,
-    ...theme.applyStyles?.('dark', {
-        backgroundColor: '#1A2027',
-    }),
-}));
-export default function RunsKPIsInfo({total_automations, active_schedules, success_rate}: {total_automations: number | undefined, active_schedules: number | undefined, success_rate: string | undefined}) {
-
-    return (
-        <Grid container spacing={2} sx={{ margin: '2rem 0' }}>
-            <Grid size={4}>
-                <Item sx={{ height: '3rem' }}>{total_automations}</Item>
-            </Grid>
-            <Grid size={4}>
-                <Item sx={{ height: '3rem' }}>{active_schedules}</Item>
-            </Grid>
-            <Grid size={4}>
-                <Item sx={{ height: '3rem' }}>{success_rate}</Item>
-            </Grid>
-        </Grid>
-    );
+export default function RunsKPIsInfo({
+  total_automations,
+  active_schedules,
+  success_rate,
+}: {
+  total_automations: number | undefined;
+  active_schedules: number | undefined;
+  success_rate: string | undefined;
+}) {
+  return (
+    <Grid container spacing={2} sx={{ margin: '2rem 0' }}>
+      <Grid size={4}>
+        <KPICard
+          data={total_automations?.toString()}
+          label="Total Automations"
+          icon={<GridViewIcon fontSize="large" />}
+        />
+      </Grid>
+      <Grid size={4}>
+        <KPICard
+          data={active_schedules?.toString()}
+          label="Active Schedules"
+          icon={<ElectricBoltIcon fontSize="large" color="secondary" />}
+        />
+      </Grid>
+      <Grid size={4}>
+        <KPICard
+          data={success_rate}
+          label="Success Rate"
+          icon={<CheckCircleOutlineIcon fontSize="large" color="success" />}
+        />
+      </Grid>
+    </Grid>
+  );
 }
-
-

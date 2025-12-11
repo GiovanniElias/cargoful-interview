@@ -1,32 +1,56 @@
-import './App.css'
-import CreateAutomationModal from './components/CreateAutomationModal'
+import './App.css';
+import CreateAutomationModal from './components/CreateAutomationModal';
 import { useEffect, useState } from 'react';
 import { loadAutomations } from './api/automations';
-import type { AutomationGridItem, KPIData, ScheduledRuns } from './models/automations';
+import type {
+  AutomationGridItem,
+  KPIData,
+  ScheduledRuns,
+} from './models/automations';
 import { Snackbar, Alert } from '@mui/material';
 import BaseGrid from './components/BaseGrid';
 import ConfirmChangesModal from './components/ConfirmChangesModal';
 
 function App() {
-  const [allAutomations, setAllAutomations] = useState<AutomationGridItem[]>([]);
+  const [allAutomations, setAllAutomations] = useState<AutomationGridItem[]>(
+    []
+  );
   const [kpi, setKpi] = useState<KPIData | null>(null);
-  const [scheduledRuns, setScheduledRuns] = useState<ScheduledRuns | null>(null);
+  const [scheduledRuns, setScheduledRuns] = useState<ScheduledRuns | null>(
+    null
+  );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [creationModalOpen, setCreationModalOpen] = useState(false);
   const [confirmChangesModalOpen, setConfirmChangesModalOpen] = useState(false);
-  const [applyChangesFunction, setApplyChangesFunction] = useState<((obj: AutomationGridItem) => void) | null>(null);
-  const [automationToChange, setAutomationToChange] = useState<AutomationGridItem>();
-  const [editingAutomation, setEditingAutomation] = useState<AutomationGridItem | null>(null);
+  const [applyChangesFunction, setApplyChangesFunction] = useState<
+    ((obj: AutomationGridItem) => void) | null
+  >(null);
+  const [automationToChange, setAutomationToChange] =
+    useState<AutomationGridItem>();
+  const [editingAutomation, setEditingAutomation] =
+    useState<AutomationGridItem | null>(null);
 
   // Fetch data from backend on component mount
   useEffect(() => {
-    loadAutomations({ setLoading, setError, setAllAutomations, setKpi, setScheduledRuns });
+    loadAutomations({
+      setLoading,
+      setError,
+      setAllAutomations,
+      setKpi,
+      setScheduledRuns,
+    });
   }, []);
 
   // When successfully created/updated an automation, refresh the data and close modals
   const handleModalSuccess = () => {
-    loadAutomations({ setLoading, setError, setAllAutomations, setKpi, setScheduledRuns });
+    loadAutomations({
+      setLoading,
+      setError,
+      setAllAutomations,
+      setKpi,
+      setScheduledRuns,
+    });
     // Close the CreateAutomationModal if it's open (happens after successful updates)
     if (creationModalOpen) {
       setCreationModalOpen(false);
@@ -44,7 +68,7 @@ function App() {
           setEditingAutomation(null);
           setCreationModalOpen(true);
         }}
-        onOpenEditModal={(automation) => {
+        onOpenEditModal={automation => {
           setEditingAutomation(automation);
           setCreationModalOpen(true);
         }}
@@ -81,7 +105,7 @@ function App() {
         <Alert severity="error">{error}</Alert>
       </Snackbar>
     </>
-  )
+  );
 }
 
-export default App
+export default App;

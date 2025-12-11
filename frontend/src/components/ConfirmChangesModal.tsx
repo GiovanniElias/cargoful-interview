@@ -17,7 +17,14 @@ interface Props {
   automationToChange: AutomationGridItem;
 }
 
-export default function ConfirmChangesModal({ open, onClose, onSuccess, onError, applyChangesFunction, automationToChange }: Props) {
+export default function ConfirmChangesModal({
+  open,
+  onClose,
+  onSuccess,
+  onError,
+  applyChangesFunction,
+  automationToChange,
+}: Props) {
   const handleConfirm = async () => {
     try {
       await applyChangesFunction(automationToChange);
@@ -26,17 +33,19 @@ export default function ConfirmChangesModal({ open, onClose, onSuccess, onError,
     } catch (error: any) {
       console.error('Error applying changes:', error);
       if (onError) {
-        const errorMessage = error?.message || 'An error occurred while applying changes';
+        const errorMessage =
+          error?.message || 'An error occurred while applying changes';
         onError(errorMessage);
       }
     }
   };
-  
+
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
       <DialogTitle>Confirm changes</DialogTitle>
-      <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
-            
+      <DialogContent
+        sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}
+      >
         <Typography>Are you sure you want to apply the changes?</Typography>
       </DialogContent>
 
