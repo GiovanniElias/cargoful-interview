@@ -104,12 +104,7 @@ export default function AutomationTable({
               </TableCell>
               <TableCell>
                 <Typography fontSize={'small'} color="#6a6a6aff">
-                  Frequency
-                </Typography>
-              </TableCell>
-              <TableCell>
-                <Typography fontSize={'small'} color="#6a6a6aff">
-                  Start Date
+                  Schedule
                 </Typography>
               </TableCell>
               <TableCell>
@@ -122,8 +117,7 @@ export default function AutomationTable({
                   Next Run
                 </Typography>
               </TableCell>
-              <TableCell>
-              </TableCell>
+              <TableCell></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

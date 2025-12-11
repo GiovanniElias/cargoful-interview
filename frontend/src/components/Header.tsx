@@ -13,7 +13,7 @@ export default function Header({ onOpenModal }: { onOpenModal: () => void }) {
         <TitleHeader />
       </Grid>
       <Grid size={6} sx={{ alignSelf: 'center' }}>
-        <CreateAutomationButton onOpenModal={onOpenModal}/>
+        <CreateAutomationButton onOpenModal={onOpenModal} />
       </Grid>
     </Grid>
   );
