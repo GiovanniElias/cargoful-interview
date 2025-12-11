@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-
+from apps.automations.services.run_automation import run_automation
 class Command(BaseCommand):
     help = "Describe what your command does"
 
@@ -8,6 +8,6 @@ class Command(BaseCommand):
     
     def handle(self, *args, **options):
         if options["automation_id"]:
-            print(f"Running automation with ID: {options['automation_id']}")
-            return
-        print("Command executed!")
+            run_automation(options["automation_id"])
+        
+        run_automation()

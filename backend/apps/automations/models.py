@@ -35,13 +35,12 @@ class Automation(models.Model):
         elif self.schedule.frequency == ScheduleFrequencyChoices.MONTHLY:
             # TODO: fix monthly frequency logic
             delta = timedelta(days=30)
-        next_run = self.schedule.start_date
-        now = timezone.now()
-
-        while next_run < now:
-            next_run += delta
-
-        return next_run
+        
+        last_run = self.last_run
+        if last_run:
+            return last_run.timestamp + delta
+        else:
+            return self.schedule.start_date
     
 class Run(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

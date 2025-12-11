@@ -68,3 +68,15 @@ class AutomationModelTest(TestCase):
         self.assertTrue(
             (next_run - schedule.start_date).days >= 28
         )
+
+    def test_last_run_creation(self):
+        schedule = Schedule.objects.create(
+            frequency=ScheduleFrequencyChoices.DAILY, start_date=timezone.now()
+        )
+        automation = Automation.objects.create(
+            name="Backup", status=True, schedule=schedule
+        )
+        run = Run.objects.create(
+            automation=automation, timestamp=timezone.now(), status=True
+        )
+        self.assertEqual(automation.last_run, run)
