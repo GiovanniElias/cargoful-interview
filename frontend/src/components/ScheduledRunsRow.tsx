@@ -8,7 +8,7 @@ type KPICardProps = {
 
 export const ScheduledRunsRow = ({ name, info }: KPICardProps) => {
   return (
-    <Card sx={{ width: '25rem', height: '2rem', margin: '.5rem 0' }}>
+    <Card sx={{ width: '28rem', height: '2rem', margin: '.5rem' }}>
       <CardContent
         sx={{
           display: 'flex',
